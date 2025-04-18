@@ -32,14 +32,12 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          // Ensure the correct endpoint is used
-          const response = await axios.post('http://localhost:3001/api/admins/login', {
+          const response = await axios.post('/api/auth/login', {
             email: credentials?.email,
             password: credentials?.password,
           });
-
-          // Validate the response and return the user object
-          if (response.data?.user) {
+      
+          if (response.data.user) {
             return {
               id: response.data.user.id,
               name: response.data.user.name,
@@ -47,12 +45,9 @@ export const authOptions: NextAuthOptions = {
               accessToken: response.data.token,
             };
           }
-
-          // Return null if no user is found
+      
           return null;
-        } catch (error: any) {
-          // Log the error for debugging
-          console.error('Error in authorize:', error?.response?.data || error.message);
+        } catch (error) {
           throw new Error('Invalid credentials');
         }
       }
@@ -69,7 +64,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
-          const response = await axios.post('/api/admins/register', {
+          const response = await axios.post('/api/auth/register', {
             name: `${credentials?.firstname} ${credentials?.lastname}`,
             email: credentials?.email,
             password: credentials?.password,
@@ -94,10 +89,6 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Redirect users to the home page or a custom page after login
-      return baseUrl;
-    },
     jwt: async ({ token, user, account }) => {
       if (user) {
         token.accessToken = user.accessToken;

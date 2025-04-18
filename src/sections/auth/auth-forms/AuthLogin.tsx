@@ -62,9 +62,15 @@ export default function AuthLogin({ providers, csrfToken }: any) {
       const trimmedEmail = values.email.trim();
       const password = values.password;
   
-    const result = await authorize(trimmedEmail, password);
-
-    if (result && 'error' in result) {
+      // Call next-auth signIn method
+      const result = await signIn('login', {
+        email: trimmedEmail,
+        password,
+        redirect: false, // Prevent automatic redirect, handle manually
+        callbackUrl: '/dashboard/finance' // Add explicit callback URL to prevent redirect loops
+      });
+  
+      if (result?.error) {
         setStatus({ success: false });
         setErrors({ submit: result.error || 'Login failed' });
       } else {
@@ -73,7 +79,7 @@ export default function AuthLogin({ providers, csrfToken }: any) {
         console.log('Login successful:', result);
   
         // Redirect after successful login
-        router.push('/dashboard/default');
+        router.push('/dashboard/finance');
       }
     } catch (err: any) {
       setStatus({ success: false });
@@ -81,56 +87,7 @@ export default function AuthLogin({ providers, csrfToken }: any) {
       setSubmitting(false);
     }
   };
-
-  async function authorize(email: string, password: string) {
-    try {
-      // Call the backend API using fetch
-      const response = await fetch('http://localhost:3001/api/admins/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      // Check if the response is OK
-      if (!response.ok) {
-        console.error('Backend returned an error:', response.status, await response.text());
-        throw new Error('Invalid credentials');
-      }
-
-      // Parse the JSON response
-      const data = await response.json();
-
-      // Validate the response and return the user object
-      if (data?.admin_id && data?.token) {
-        return {
-          id: data.admin_id, // Map admin_id to id
-          name: data.name,
-          email: data.email,
-          role: data.role,
-          accessToken: data.token, // Store the token as accessToken
-        };
-      }
-
-
-      
-      // Log if no user is found
-      console.warn('No user found in backend response');
-      return null;
-    } catch (error) {
-      // Log the error for debugging
-      if (error instanceof Error) {
-        console.error('Error in authorize:', error.message);
-      } else {
-        console.error('Error in authorize:', error);
-      }
-      throw new Error('Invalid credentials');
-    }
-  }
+  
 
   return (
     <>
@@ -224,7 +181,7 @@ export default function AuthLogin({ providers, csrfToken }: any) {
                     label={<Typography variant="h6">Keep me sign in</Typography>}
                   />
                   <Links variant="h6" component={Link} href={session ? '/auth/forgot-password' : '/forgot-password'} color="text.primary">
-                    Forgot Password111?
+                    Forgot Password?
                   </Links>
                 </Stack>
               </Grid>

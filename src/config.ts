@@ -2,14 +2,14 @@
 import { Inter } from 'next/font/google';
 
 // types
-import { DefaultConfigProps } from 'types/config';
+import { DefaultConfigProps } from './types/config';
 
 // ==============================|| THEME CONSTANT ||============================== //
 
 export const facebookColor = '#3b5998';
 export const linkedInColor = '#0e76a8';
 
-export const APP_DEFAULT_PATH = '/login';
+export const APP_DEFAULT_PATH = '/dashboard/default';
 export const HORIZONTAL_MAX_ITEM = 8;
 export const DRAWER_WIDTH = 280;
 export const MINI_DRAWER_WIDTH = 90;
@@ -63,7 +63,7 @@ const config: DefaultConfigProps = {
   menuCaption: true,
   miniDrawer: false,
   container: true,
-  mode: ThemeMode.DARK,
+  mode: ThemeMode.LIGHT,
   presetColor: 'default',
   themeDirection: ThemeDirection.LTR,
   themeContrast: false
