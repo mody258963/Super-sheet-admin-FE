@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 
 // material-ui
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -12,6 +12,7 @@ import NavItem from './NavItem';
 import { useGetMenu, useGetMenuMaster } from 'api/menu';
 import { MenuOrientation, HORIZONTAL_MAX_ITEM } from 'config';
 import useConfig from 'hooks/useConfig';
+import useIsomorphicLayoutEffect from 'hooks/useIsomorphicLayoutEffect';
 import menuItem from 'menu-items';
 import { MenuFromAPI } from 'menu-items/dashboard';
 
@@ -44,7 +45,7 @@ export default function Navigation() {
 
   const dashboardMenu = MenuFromAPI();
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (menuLoading && !isFound(menuItem, 'group-dashboard-loading')) {
       menuItem.items.splice(0, 0, dashboardMenu);
       setMenuItems({ items: [...menuItem.items] });

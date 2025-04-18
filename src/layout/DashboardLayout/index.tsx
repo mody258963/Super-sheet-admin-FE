@@ -18,6 +18,7 @@ import HorizontalBar from './Drawer/HorizontalBar';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import Loader from 'components/Loader';
 import AddCustomer from 'sections/apps/customer/AddCustomer';
+import ClientOnly from 'components/ClientOnly';
 import { useIspValue } from 'hooks/useIspValue';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
@@ -55,7 +56,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
       <Header />
-      {!isHorizontal ? <Drawer /> : <HorizontalBar />}
+      <ClientOnly>
+        {!isHorizontal ? <Drawer /> : <HorizontalBar />}
+      </ClientOnly>
 
       <Box component="main" sx={{ width: `calc(100% - ${DRAWER_WIDTH}px)`, flexGrow: 1, p: { xs: 1, sm: 3 } }}>
         <Toolbar sx={{ mt: isHorizontal ? 8 : 'inherit', mb: isHorizontal ? 2 : 'inherit' }} />
@@ -84,7 +87,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </Button>
         </Links>
       </Box>
-      <AddCustomer />
+      <ClientOnly>
+        <AddCustomer />
+      </ClientOnly>
     </Box>
   );
 }

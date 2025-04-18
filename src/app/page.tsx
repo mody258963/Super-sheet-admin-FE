@@ -13,16 +13,18 @@ import Partner from 'sections/landing/Partner';
 import Subscribe from 'sections/landing/Subscribe';
 import SimpleLayout from 'layout/SimpleLayout';
 
-// ==============================|| LANDING PAGE ||============================== //
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Landing() {
-  return (
-    <SimpleLayout>
-      <Hero />
-      <Apps />
-      <Testimonial />
-      <Subscribe />
-      <Divider sx={{ borderColor: 'secondary.light' }} />
-    </SimpleLayout>
-  );
+// ==============================|| REDIRECT TO LOGIN PAGE ||============================== //
+
+export default function RootPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/login');
+  }, [router]);
+
+  return null; // No UI rendered as we're redirecting
 }

@@ -11,6 +11,7 @@ import { ConfigProvider } from 'contexts/ConfigContext';
 import RTLLayout from 'components/RTLLayout';
 import Locales from 'components/Locales';
 import ScrollTop from 'components/ScrollTop';
+import ClientOnly from 'components/ClientOnly';
 
 import Notistack from 'components/third-party/Notistack';
 import Customization from 'components/customization';
@@ -29,7 +30,9 @@ export default function ProviderWrapper({ children }: { children: ReactElement }
                 <Notistack>
                   <Snackbar />
                   {children}
-                  <Customization />
+                  <ClientOnly>
+                    <Customization />
+                  </ClientOnly>
                 </Notistack>
               </SessionProvider>
             </ScrollTop>
