@@ -58,7 +58,7 @@ interface Props {
 
 // ==============================|| REACT TABLE ||============================== //
 
-function ReactTable({ data, columns }: Props) {
+function ReactTable({ data = [], columns }: Props) {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -99,9 +99,14 @@ function ReactTable({ data, columns }: Props) {
         <DebouncedInput
           value={globalFilter ?? ''}
           onFilterChange={(value) => setGlobalFilter(String(value))}
-          placeholder={`Search ${data.length} records...`}
+          placeholder={`Search ${data?.length ?? 0} records...`}
         />
 
+        {(() => {
+          console.log('Selected Rows:', table.getSelectedRowModel()?.flatRows ?? []);
+          console.log('Row Selection State:', rowSelection);
+          return null;
+        })()}
         <Stack direction="row" sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
           <Button size="large" variant="outlined" component={Link} href={'/admin-panel/online-course/teacher/apply'}>
             Applied Teacher List
@@ -111,11 +116,16 @@ function ReactTable({ data, columns }: Props) {
           </Button>
           <CSVExport
             {...{
-              data: table.getSelectedRowModel().flatRows.map((row) => row.original),
+              data: table.getSelectedRowModel()?.flatRows?.map((row) => row.original) ?? [],
               headers,
               filename: 'teacher-list.csv'
             }}
           />
+          {table.getSelectedRowModel()?.flatRows?.length === 0 && (
+            <Typography sx={{ color: 'text.secondary', mt: 2 }}>
+              No rows selected for export.
+            </Typography>
+          )}
         </Stack>
       </Stack>
       <Stack>

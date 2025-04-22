@@ -36,6 +36,7 @@ import { APP_DEFAULT_PATH } from 'config';
 import { useRouter } from 'next/navigation';
 // assets
 import { Eye, EyeSlash } from '@wandersonalwes/iconsax-react';
+import { result } from 'lodash-es';
 
 const Auth0 = '/assets/images/icons/auth0.svg';
 const Cognito = '/assets/images/icons/aws-cognito.svg';
@@ -44,9 +45,11 @@ const Google = '/assets/images/icons/google.svg';
 export default function AuthLogin({ providers, csrfToken }: any) {
   const downSM = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const [checked, setChecked] = useState(false);
-  const { data: session } = useSession();
+  const { data: session ,status} = useSession();
   const [showPassword, setShowPassword] = useState(false);
 
+  console.log('Session data:', session);
+  console.log('Session status:', status);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -62,24 +65,25 @@ export default function AuthLogin({ providers, csrfToken }: any) {
       const trimmedEmail = values.email.trim();
       const password = values.password;
   
-      // Call next-auth signIn method
-      const result = await signIn('login', {
+      const result = await signIn('credentials', {
         email: trimmedEmail,
         password,
-        redirect: false, // Prevent automatic redirect, handle manually
-        callbackUrl: '/dashboard/finance' // Add explicit callback URL to prevent redirect loops
+        redirect: false, // Prevent automatic redirect
       });
+  
+      console.log('SignIn result:', result);
   
       if (result?.error) {
         setStatus({ success: false });
         setErrors({ submit: result.error || 'Login failed' });
-      } else {
+      } else if (result?.ok) {
         setStatus({ success: true });
         setSubmitting(false);
+  
         console.log('Login successful:', result);
   
         // Redirect after successful login
-        router.push('/dashboard/finance');
+        router.push('/admin-panel/membership/dashboard');
       }
     } catch (err: any) {
       setStatus({ success: false });
@@ -87,6 +91,45 @@ export default function AuthLogin({ providers, csrfToken }: any) {
       setSubmitting(false);
     }
   };
+
+  async function authorize(email: string, password: string) {
+    try {
+      const response = await fetch('http://localhost:3001/api/admins/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Invalid credentials');
+      }
+  
+      const data = await response.json();
+  
+      if (data?.admin_id && data?.token) {
+        return {
+          id: data.admin_id,
+          name: data.name,
+          email: data.email,
+          role: data.role,
+          accessToken: data.token,
+          ok: true, // Add the 'ok' property
+        };
+      }
+  
+      return null;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error in authorize:', error.message);
+      } else {
+        console.error('Error in authorize:', error);
+      }
+      throw new Error('Invalid credentials');
+    }
+  }
   
 
   return (

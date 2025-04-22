@@ -134,7 +134,7 @@ function ReactTable({ data, columns, modalToggler }: Props) {
         <DebouncedInput
           value={globalFilter ?? ''}
           onFilterChange={(value) => setGlobalFilter(String(value))}
-          placeholder={`Search ${data.length} records...`}
+          placeholder={'Search records...'}
         />
 
         <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 2, alignItems: 'center' }}>
@@ -397,16 +397,15 @@ export default function CustomerListPage() {
 
   if (loading) return <EmptyTables />;
 
+  // Ensure `lists` is always an array
   return (
     <>
       <ReactTable
-        {...{
-          data: lists,
-          columns,
-          modalToggler: () => {
-            setCustomerModal(true);
-            setSelectedCustomer(null);
-          }
+        data={lists || []} // Fallback to an empty array
+        columns={columns}
+        modalToggler={() => {
+          setCustomerModal(true);
+          setSelectedCustomer(null);
         }}
       />
       <AlertCustomerDelete id={Number(customerDeleteId)} title={customerDeleteId} open={open} handleClose={handleClose} />

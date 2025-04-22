@@ -41,38 +41,7 @@ const applications: NavItemType = {
   icon: icons.applications,
   type: 'group',
   children: [
-    {
-      id: 'chat',
-      title: 'chat',
-      type: 'item',
-      url: '/apps/chat',
-      icon: icons.chat,
-      breadcrumbs: false
-    },
-    {
-      id: 'calendar',
-      title: 'calendar',
-      type: 'item',
-      url: '/apps/calendar',
-      icon: icons.calendar,
-      actions: [
-        {
-          type: NavActionType.LINK,
-          label: 'Full Calendar',
-          icon: icons.link,
-          url: 'https://fullcalendar.io/docs/react',
-          target: true
-        }
-      ]
-    },
-    {
-      id: 'kanban',
-      title: 'kanban',
-      type: 'item',
-      icon: icons.kanban,
-      url: '/apps/kanban/board',
-      breadcrumbs: false
-    },
+  
     {
       id: 'customer',
       title: 'customer',
@@ -93,114 +62,10 @@ const applications: NavItemType = {
             }
           ]
         },
-        {
-          id: 'customer-card',
-          title: 'cards',
-          type: 'item',
-          url: '/apps/customer/customer-card'
-        }
-      ]
-    },
-    {
-      id: 'invoice',
-      title: 'invoice',
-      url: '/apps/invoice/dashboard',
-      type: 'collapse',
-      icon: icons.invoice,
-      breadcrumbs: false,
-      children: [
-        {
-          id: 'invoice-create',
-          title: 'create',
-          type: 'item',
-          url: '/apps/invoice/create',
-          breadcrumbs: false
-        },
-        {
-          id: 'invoice-details',
-          title: 'details',
-          type: 'item',
-          url: '/apps/invoice/details/1',
-          breadcrumbs: false
-        },
-        {
-          id: 'invoice-list',
-          title: 'list',
-          type: 'item',
-          url: '/apps/invoice/list',
-          breadcrumbs: false
-        },
-        {
-          id: 'invoice-edit',
-          title: 'edit',
-          type: 'item',
-          url: '/apps/invoice/edit/1',
-          breadcrumbs: false
-        }
-      ]
-    },
-    {
-      id: 'profile',
-      title: 'profile',
-      type: 'collapse',
-      icon: icons.profile,
-      children: [
-        {
-          id: 'user-profile',
-          title: 'user-profile',
-          type: 'item',
-          url: '/apps/profiles/user/personal',
-          breadcrumbs: false
-        },
-        {
-          id: 'account-profile',
-          title: 'account-profile',
-          type: 'item',
-          url: '/apps/profiles/account/basic',
-          breadcrumbs: false
-        }
-      ]
-    },
 
-    {
-      id: 'e-commerce',
-      title: 'e-commerce',
-      type: 'collapse',
-      icon: icons.ecommerce,
-      children: [
-        {
-          id: 'products',
-          title: 'products',
-          type: 'item',
-          url: '/apps/e-commerce/products'
-        },
-        {
-          id: 'product-details',
-          title: 'product-details',
-          type: 'item',
-          url: '/apps/e-commerce/product-details/1',
-          breadcrumbs: false
-        },
-        {
-          id: 'product-list',
-          title: 'product-list',
-          type: 'item',
-          url: '/apps/e-commerce/product-list'
-        },
-        {
-          id: 'add-new-product',
-          title: 'add-new-product',
-          type: 'item',
-          url: '/apps/e-commerce/add-new-product'
-        },
-        {
-          id: 'checkout',
-          title: 'checkout',
-          type: 'item',
-          url: '/apps/e-commerce/checkout'
-        }
       ]
-    }
+    },
+   
   ]
 };
 

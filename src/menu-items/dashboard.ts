@@ -19,30 +19,8 @@ const loadingMenu: NavItemType = {
   title: 'dashboard',
   type: 'group',
   icon: icons.loading,
-  children: [
-    {
-      id: 'dashboard1',
-      title: 'dashboard',
-      type: 'collapse',
-      icon: icons.loading,
-      children: [
-        {
-          id: 'default1',
-          title: 'loading',
-          type: 'item',
-          url: '/dashboard/default',
-          breadcrumbs: false
-        },
-        {
-          id: 'analytics1',
-          title: 'loading',
-          type: 'item',
-          url: '/dashboard/analytics',
-          breadcrumbs: false
-        }
-      ]
-    }
-  ]
+  url: '/admin-panel/membership/dashboard',
+
 };
 
 // ==============================|| MENU ITEMS - API ||============================== //

@@ -18,14 +18,8 @@ import RevenueAnalytics from 'sections/admin-panel/membership/dashboard/RevenueA
 // ==============================|| MEMBERSHIP - DASHBORD ||============================== //
 
 export default function MembershipDashboard() {
-  const breadcrumbLinks = [
-    { title: 'home', to: APP_DEFAULT_PATH },
-    { title: 'membership', to: '/admin-panel/membership/dashboard' },
-    { title: 'dashboard' }
-  ];
   return (
     <>
-      <Breadcrumbs custom heading="dashboard" links={breadcrumbLinks} />
       <Grid container spacing={GRID_COMMON_SPACING}>
         {/* row 1 */}
         {dashboardWidgetData.map((card, index) => (

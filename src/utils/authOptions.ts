@@ -1,127 +1,79 @@
-// next
-import type { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
-// project imports
-import axios from 'utils/axios';
-
-const users = [
-  {
-    id: 1,
-    name: 'Jone Doe',
-    email: 'info@codedthemes.com',
-    password: '123456'
-  }
-];
-
-declare module 'next-auth' {
-  interface User {
-    accessToken?: string;
-  }
-}
+import { NextAuthOptions } from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET_KEY,
   providers: [
     CredentialsProvider({
-      id: 'login',
-      name: 'login',
+      name: 'Credentials',
       credentials: {
-        email: { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
-        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      authorize: async (credentials) => {
         try {
-          const response = await axios.post('/api/auth/login', {
-            email: credentials?.email,
-            password: credentials?.password,
+          const res = await fetch('http://localhost:3001/api/admins/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
           });
       
-          if (response.data.user) {
-            return {
-              id: response.data.user.id,
-              name: response.data.user.name,
-              email: response.data.user.email,
-              accessToken: response.data.token,
-            };
+          // Check if the response is JSON
+          const contentType = res.headers.get('content-type');
+          if (!res.ok || !contentType?.includes('application/json')) {
+            console.error('Non-JSON or failed response:', await res.text());
+            return null;
           }
       
-          return null;
+          const user = await res.json();
+      
+          // Return expected format
+          return {
+            id: user.admin_id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            accessToken: user.token,
+          };
         } catch (error) {
-          throw new Error('Invalid credentials');
-        }
-      }
-    }),
-    CredentialsProvider({
-      id: 'register',
-      name: 'Register',
-      credentials: {
-        firstname: { name: 'firstname', label: 'Firstname', type: 'text', placeholder: 'Enter Firstname' },
-        lastname: { name: 'lastname', label: 'Lastname', type: 'text', placeholder: 'Enter Lastname' },
-        email: { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
-        company: { name: 'company', label: 'Company', type: 'text', placeholder: 'Enter Company' },
-        password: { name: 'password', label: 'Password', type: 'password', placeholder: 'Enter Password' }
-      },
-      async authorize(credentials) {
-        try {
-          const response = await axios.post('/api/auth/register', {
-            name: `${credentials?.firstname} ${credentials?.lastname}`,
-            email: credentials?.email,
-            password: credentials?.password,
-            role: "user",
-            status: "active"
-          });
-
-          if (response.data.user) {
-            return {
-              id: response.data.user.id,
-              name: response.data.user.name,
-              email: response.data.user.email,
-              accessToken: response.data.token,
-            };
-          }
+          console.error('Authorize error:', error);
           return null;
-        } catch (e: any) {
-          const errorMessage = e?.message || e?.response?.data?.message || 'Something went wrong!';
-          throw new Error(errorMessage);
         }
       }
-    })
+      
+    }),
   ],
   callbacks: {
-    jwt: async ({ token, user, account }) => {
+    async jwt({ token, user }) {
       if (user) {
+        token.id = Number(user.id);
+        token.name = user.name;
+        token.email = user.email;
+        token.role = user.role;
         token.accessToken = user.accessToken;
-        token.id = user.id;
-        token.provider = account?.provider;
       }
       return token;
     },
-    session: ({ session, token }) => {
-      if (token) {
-        session.id = token.id;
-        session.provider = token.provider;
-        session.token = token;
-      }
+    async session({ session, token }) {
+      session.user.id = token.id ?? 0; // fallback to 0 or any default
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.role = token.role;
+      session.user.accessToken = token.accessToken;
       return session;
     },
-    async signIn(params) {
-      // Prevent JWT token issuance on registration
-      if (params.account?.provider === 'register') {
-        return `${process.env.NEXTAUTH_URL}login`;
-      }
-      return true;
-    }
   },
   session: {
     strategy: 'jwt',
-    maxAge: Number(process.env.NEXT_APP_JWT_TIMEOUT!)
+    maxAge: 60 * 60 * 24 * 7
   },
   jwt: {
-    secret: process.env.NEXT_APP_JWT_SECRET
+    maxAge: 60 * 60 * 24 * 7
   },
   pages: {
     signIn: '/login',
-    newUser: '/register'
-  }
+  },
 };
+
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

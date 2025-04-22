@@ -1,80 +1,108 @@
 'use client';
 
 import { useState } from 'react';
-
-// material-ui
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid2';
-import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-
+import {
+  Button, Grid, InputAdornment, InputLabel, MenuItem, OutlinedInput,
+  Select, Stack, TextField, Box, SelectChangeEvent
+} from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-
-// project-imports
+import { Eye, EyeSlash } from '@wandersonalwes/iconsax-react';
 import MainCard from 'components/MainCard';
 
-// assets
-import { Eye, EyeSlash } from '@wandersonalwes/iconsax-react';
-
-// ==============================|| ONLINE COURSES - ADD TEACHER ||============================== //
-
 export default function AddTeacher() {
-  const [value, setValue] = useState('female');
-  const [department, setDepartment] = useState('department');
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'admin'
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState<{ success: boolean; message: string } | null>(null);
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setForm((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleDepartment = (event: SelectChangeEvent) => {
-    setDepartment(event.target.value);
+  const handleRoleChange = (e: SelectChangeEvent) => {
+    setForm((prev) => ({ ...prev, role: e.target.value }));
+  };
+
+  const handleSubmit = async () => {
+    console.log('Form data before submission:', form);
+
+    if (form.password !== form.confirmPassword) {
+      console.error('Passwords do not match');
+      setResponse({ success: false, message: "Passwords do not match" });
+      return;
+    }
+
+    setLoading(true);
+    setResponse(null);
+
+    try {
+      const res = await fetch('/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          role: form.role
+        })
+      });
+
+      console.log('Response status:', res.status);
+
+      const data = await res.json();
+      console.log('Response data:', data);
+
+      if (!res.ok) {
+        console.error('Error during registration:', data.error || 'Registration failed');
+        setResponse({ success: false, message: data.error || 'Registration failed' });
+      } else {
+        console.log('Admin registered successfully');
+        setResponse({ success: true, message: 'Admin registered successfully!' });
+        setForm({ name: '', email: '', password: '', confirmPassword: '', role: 'admin' });
+      }
+    } catch (err) {
+      console.error('Error during fetch:', err);
+      setResponse({ success: false, message: 'Something went wrong' });
+    } finally {
+      setLoading(false);
+      console.log('Loading state set to false');
+    }
   };
 
   return (
-    <MainCard title="Basic Information" contentSX={{ p: 2.5 }}>
+    <MainCard title="Register Admin" contentSX={{ p: 2.5 }}>
       <Grid container spacing={2.5}>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel htmlFor="first-name">First Name</InputLabel>
-            <TextField fullWidth id="first-name" placeholder="Enter first name" autoFocus />
+        <Grid xs={12} sm={6}>
+          <Stack gap={1}>
+            <InputLabel htmlFor="name">Name</InputLabel>
+            <TextField fullWidth id="name" value={form.name} onChange={handleChange} placeholder="Enter name" />
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel htmlFor="last-name">Last Name</InputLabel>
-            <TextField fullWidth id="last-name" placeholder="Enter last name" />
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
+        <Grid xs={12} sm={6}>
+          <Stack gap={1}>
             <InputLabel htmlFor="email">Email</InputLabel>
-            <TextField fullWidth id="email" placeholder="Enter email" type="email" />
+            <TextField fullWidth id="email" value={form.email} onChange={handleChange} placeholder="Enter email" type="email" />
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel>Joining Date</InputLabel>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker />
-            </LocalizationProvider>
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
+        <Grid xs={12} sm={6}>
+          <Stack gap={1}>
             <InputLabel htmlFor="password">Password</InputLabel>
             <OutlinedInput
               fullWidth
               id="password"
+              value={form.password}
+              onChange={handleChange}
               placeholder="Enter password"
               type={showPassword ? 'text' : 'password'}
               endAdornment={
@@ -87,12 +115,14 @@ export default function AddTeacher() {
             />
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel htmlFor="confirm-password">Confirm Password</InputLabel>
+        <Grid xs={12} sm={6}>
+          <Stack gap={1}>
+            <InputLabel htmlFor="confirmPassword">Confirm Password</InputLabel>
             <OutlinedInput
               fullWidth
-              id="confirm-password"
+              id="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
               placeholder="Enter confirm password"
               type={showConfirmPassword ? 'text' : 'password'}
               endAdornment={
@@ -105,59 +135,28 @@ export default function AddTeacher() {
             />
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel htmlFor="mobile-number">Mobile Number</InputLabel>
-            <TextField fullWidth id="mobile-number" placeholder="Enter mobile number" type="tel" />
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel id="gender-label">Gender</InputLabel>
-            <Select value={value} onChange={handleChange} id="gender" labelId="gender-label">
-              <MenuItem value="female">Female</MenuItem>
-              <MenuItem value="male">Male</MenuItem>
+        <Grid xs={12} sm={6}>
+          <Stack gap={1}>
+            <InputLabel htmlFor="role">Role</InputLabel>
+            <Select id="role" value={form.role} onChange={handleRoleChange} fullWidth>
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="finance">Finance</MenuItem>
+              <MenuItem value="sales">Sales</MenuItem>
             </Select>
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel htmlFor="designation">Designation</InputLabel>
-            <TextField fullWidth id="designation" placeholder="Designation" />
+
+        <Grid xs={12}>
+          <Stack gap={1}>
+            {response && (
+              <Box sx={{ color: response.success ? 'green' : 'red' }}>
+                {response.message}
+              </Box>
+            )}
+            <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+              {loading ? 'Submitting...' : 'Register'}
+            </Button>
           </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel>Department</InputLabel>
-            <Select value={department} onChange={handleDepartment}>
-              <MenuItem value="department">Department</MenuItem>
-              <MenuItem value="department1">Department1</MenuItem>
-              <MenuItem value="department2">Department2</MenuItem>
-            </Select>
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel>Date of Birth</InputLabel>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker />
-            </LocalizationProvider>
-          </Stack>
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel htmlFor="education">Education</InputLabel>
-            <TextField fullWidth id="education" placeholder="Education" />
-          </Stack>
-        </Grid>
-        <Grid size={12}>
-          <Stack sx={{ gap: 1 }}>
-            <InputLabel>Photo</InputLabel>
-            <TextField fullWidth type="file" />
-          </Stack>
-        </Grid>
-        <Grid size={12} sx={{ textAlign: 'end' }}>
-          <Button variant="contained">Submit</Button>
         </Grid>
       </Grid>
     </MainCard>

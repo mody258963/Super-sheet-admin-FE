@@ -1,19 +1,23 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { getSession, signOut } from 'next-auth/react';
 
-const axiosServices = axios.create({ baseURL: 'http://localhost:3001' });
+const instance = axios.create({
+  baseURL: 'http://localhost:3001/api', // Set your backend API base URL
+});
 
 // ==============================|| AXIOS - FOR MOCK SERVICES ||============================== //
 
 /**
  * Request interceptor to add Authorization token to request
  */
-axiosServices.interceptors.request.use(
+instance.interceptors.request.use(
   async (config) => {
-    const session = await getSession();
-    if (session?.token.accessToken) {
-      config.headers['Authorization'] = `Bearer ${session?.token.accessToken}`;
+    const session = await getSession(); // Get the session from next-auth
+
+    if (session?.user?.accessToken) {
+      config.headers['Authorization'] = `Bearer ${session.user.accessToken}`;
     }
+
     return config;
   },
   (error) => {
@@ -21,7 +25,7 @@ axiosServices.interceptors.request.use(
   }
 );
 
-axiosServices.interceptors.response.use(
+instance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response.status === 401 && !window.location.href.includes('/login')) {
@@ -32,12 +36,12 @@ axiosServices.interceptors.response.use(
   }
 );
 
-export default axiosServices;
+export default instance;
 
 export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
   const [url, config] = Array.isArray(args) ? args : [args];
 
-  const res = await axiosServices.get(url, { ...config });
+  const res = await instance.get(url, { ...config });
 
   return res.data;
 };
@@ -45,7 +49,7 @@ export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
 export const fetcherPost = async (args: string | [string, AxiosRequestConfig]) => {
   const [url, config] = Array.isArray(args) ? args : [args];
 
-  const res = await axiosServices.post(url, { ...config });
+  const res = await instance.post(url, { ...config });
 
   return res.data;
 };

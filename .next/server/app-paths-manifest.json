@@ -1,7 +1,9 @@
 {
+  "/api/users/route": "app/api/users/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
-  "/(dashboard)/dashboard/finance/page": "app/(dashboard)/dashboard/finance/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js"
+  "/(dashboard)/admin-panel/users/list/page": "app/(dashboard)/admin-panel/users/list/page.js",
+  "/(dashboard)/admin-panel/membership/dashboard/page": "app/(dashboard)/admin-panel/membership/dashboard/page.js",
+  "/(dashboard)/admin-panel/online-course/teacher/add/page": "app/(dashboard)/admin-panel/online-course/teacher/add/page.js",
+  "/(dashboard)/apps/profiles/user/[tab]/page": "app/(dashboard)/apps/profiles/user/[tab]/page.js"
 }

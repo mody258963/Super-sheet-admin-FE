@@ -56,16 +56,54 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(dashboard)/loading.js"
     ],
-    "/(dashboard)/dashboard/loading": [
+    "/(dashboard)/admin-panel/membership/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(dashboard)/dashboard/loading.js"
+      "static/css/app/(dashboard)/admin-panel/membership/dashboard/page.css",
+      "static/chunks/app/(dashboard)/admin-panel/membership/dashboard/page.js"
     ],
-    "/(dashboard)/dashboard/finance/page": [
+    "/(dashboard)/admin-panel/users/list/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(dashboard)/dashboard/finance/page.css",
-      "static/chunks/app/(dashboard)/dashboard/finance/page.js"
+      "static/css/app/(dashboard)/admin-panel/users/list/page.css",
+      "static/chunks/app/(dashboard)/admin-panel/users/list/page.js"
+    ],
+    "/(dashboard)/admin-panel/online-course/teacher/add/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(dashboard)/admin-panel/online-course/teacher/add/page.css",
+      "static/chunks/app/(dashboard)/admin-panel/online-course/teacher/add/page.js"
+    ],
+    "/[...not_found]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/[...not_found]/page.js"
+    ],
+    "/api/users/register/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/users/register/route.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
+    ],
+    "/api/users/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/users/route.js"
+    ],
+    "/(dashboard)/apps/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(dashboard)/apps/loading.js"
+    ],
+    "/(dashboard)/apps/profiles/user/[tab]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(dashboard)/apps/profiles/user/[tab]/page.css",
+      "static/chunks/app/(dashboard)/apps/profiles/user/[tab]/page.js"
     ]
   }
 }

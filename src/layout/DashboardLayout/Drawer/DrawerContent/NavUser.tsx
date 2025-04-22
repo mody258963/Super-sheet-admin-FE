@@ -53,7 +53,7 @@ export default function UserList() {
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
   const { data: session } = useSession();
-  const provider = session?.provider;
+  const provider = session?.user.email;
 
   const handleLogout = () => {
     switch (provider) {
