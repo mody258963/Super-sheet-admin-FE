@@ -1,5 +1,13 @@
 // assets
-import { Book1, I24Support, Profile2User, KyberNetwork } from '@wandersonalwes/iconsax-react';
+import { Book1, I24Support, Profile2User, KyberNetwork, Add } from '@wandersonalwes/iconsax-react';
+import { NavActionType } from 'config';
+
+// Import custom handlers for each section
+import { 
+  handleUserDialog, 
+  handlePackageDialog, 
+  handleSubscriptionDialog 
+} from 'api/admin-panel';
 
 // types
 import { NavItemType } from 'types/menu';
@@ -9,7 +17,8 @@ const icons = {
   dashboard: Book1,
   applications: KyberNetwork,
   membership: Profile2User,
-  helpdesk: I24Support
+  helpdesk: I24Support,
+  add: Add
 };
 
 // ==============================|| MENU ITEMS - ADMIN PANEL ||============================== //
@@ -23,44 +32,45 @@ const adminPanel: NavItemType = {
     {
       id: 'users',
       title: 'Users',
-      type: 'collapse',
+      type: 'item',
       icon: icons.membership,
-      children: [
+      url: '/admin-panel/users/list',
+      actions: [
         {
-          id: 'users-list',
-          title: 'list',
-          type: 'item',
-          url: '/admin-panel/users/list',
-          breadcrumbs: false
-        },
+          type: NavActionType.FUNCTION,
+          label: 'Add User',
+          function: () => handleUserDialog(true),
+          icon: icons.add
+        }
+      ]
+    },
+    {
+      id: 'package',
+      title: 'Package',
+      type: 'item',
+      url: '/admin-panel/packege/list',
+      icon: icons.membership,
+      actions: [
+        {
+          type: NavActionType.FUNCTION,
+          label: 'Add Package',
+          function: () => handlePackageDialog(true),
+          icon: icons.add
+        }
       ]
     },
     {
       id: 'membership',
       title: 'Subscription',
-      type: 'collapse',
+      type: 'item',
+      url: '/admin-panel/membership/list',
       icon: icons.membership,
-      children: [
+      actions: [
         {
-          id: 'membership-list',
-          title: 'list',
-          type: 'item',
-          url: '/admin-panel/membership/list',
-          breadcrumbs: false
-        },
-        {
-          id: 'membership-pricing',
-          title: 'pricing',
-          type: 'item',
-          url: '/admin-panel/membership/price',
-          breadcrumbs: false
-        },
-        {
-          id: 'membership-setting',
-          title: 'setting',
-          type: 'item',
-          url: '/admin-panel/membership/setting',
-          breadcrumbs: false
+          type: NavActionType.FUNCTION,
+          label: 'Add Subscription',
+          function: () => handleSubscriptionDialog(true),
+          icon: icons.add
         }
       ]
     },

@@ -5,6 +5,8 @@ import { useMemo, useState, Fragment, MouseEvent, useEffect } from 'react';
 // material-ui
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -48,10 +50,10 @@ import {
 
 import { APP_DEFAULT_PATH } from 'config';
 import EmptyReactTable from 'views/forms-tables/tables/react-table/EmptyTable';
-import AlertMembershipDelete from 'sections/admin-panel/membership/list/AlertMembershipDelete';
+
 
 // assets
-import { Add, Edit, Eye, Trash } from '@wandersonalwes/iconsax-react';
+import { Add, Edit, Eye, Trash, CloseCircle } from '@wandersonalwes/iconsax-react';
 
 const avatarImage = '/assets/images/users';
 
@@ -71,13 +73,27 @@ interface Props {
   data: Admin[];
 }
 
+// Define status options for filtering
+const statusOptions = [
+  { value: '', label: 'All' },
+  { value: 'admin', label: 'Admin' },
+  { value: 'user', label: 'User' },
+  { value: 'teacher', label: 'Teacher' }
+];
+
 function ReactTable({ data, columns }: Props) {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'name', desc: false }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string | number>('');
 
-  const safeData = Array.isArray(data) ? data : [];
+  const filteredData = useMemo(() => {
+    if (statusFilter === '') return data;
+    return data.filter((admin) => admin.role === statusFilter);
+  }, [statusFilter, data]);
+  
+  const safeData = Array.isArray(filteredData) ? filteredData : [];
 
   const table = useReactTable({
     data: safeData,
@@ -110,14 +126,36 @@ function ReactTable({ data, columns }: Props) {
     <MainCard content={false}>
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
-        sx={{ gap: 2, p: 3, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between' }}
+        sx={(theme) => ({
+          gap: 2,
+          justifyContent: 'space-between',
+          p: 3,
+          borderBottom: `1px solid ${theme.palette.divider}`
+        })}
       >
-        <DebouncedInput
-          value={globalFilter ?? ''}
-          onFilterChange={(value) => setGlobalFilter(String(value))}
-          placeholder={`Search ${safeData.length} records...`}
-          sx={{ width: { xs: 1, sm: 'auto' } }}
-        />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <DebouncedInput
+            value={globalFilter ?? ''}
+            onFilterChange={(value) => setGlobalFilter(String(value))}
+            placeholder={`Search ${safeData.length} records...`}
+            sx={{ width: { xs: 1, sm: 'auto' } }}
+          />
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="subtitle1">Filter by:</Typography>
+            <Select
+              size="small"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              sx={{ minWidth: '120px' }}
+            >
+              {statusOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </Stack>
+        </Stack>
 
         <Stack
           direction="row"
@@ -205,13 +243,33 @@ function ReactTable({ data, columns }: Props) {
   );
 }
 
-export default function MembershipList() {
+export default function UserList() {
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
   const [membershipDeleteId, setMembershipDeleteId] = useState<any>('');
 
   const handleClose = () => setOpen(!open);
+
+  // Status options for filtering
+  const statusOptions = [
+    {
+      value: '',
+      label: 'All Roles'
+    },
+    {
+      value: 'admin',
+      label: 'Admin'
+    },
+    {
+      value: 'user',
+      label: 'User'
+    },
+    {
+      value: 'manager',
+      label: 'Manager'
+    }
+  ];
 
   const fetchAdmins = async () => {
     try {
@@ -322,14 +380,50 @@ export default function MembershipList() {
 
   const breadcrumbLinks = [
     { title: 'home', to: APP_DEFAULT_PATH },
-    { title: 'list' }
+    { title: 'admin panel', to: '/admin-panel/dashboard' },
+    { title: 'users' }
   ];
 
   return (
     <>
-      <Breadcrumbs custom heading="Users list" links={breadcrumbLinks} />
+      <Breadcrumbs custom heading="Users Management" links={breadcrumbLinks} />
       <ReactTable data={admins} columns={columns} />
-      <AlertMembershipDelete id={Number(membershipDeleteId)} open={open} handleClose={handleClose} />
+      {/* Custom AlertDialog for delete confirmation */}
+      {open && (
+        <MainCard
+          title="Delete Confirmation"
+          open={open}
+          onClose={handleClose}
+          modal
+          sx={{
+            position: 'absolute',
+            width: { xs: '95%', sm: '80%', md: '70%', lg: '60%' },
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            maxWidth: 500,
+            minWidth: { sm: 400 },
+            '& .MuiCardContent-root': {
+              p: 0
+            }
+          }}
+          secondary={<IconButton onClick={handleClose}><CloseCircle /></IconButton>}
+        >
+          <Stack spacing={3} sx={{ p: 3 }}>
+            <Typography variant="h5">Are you sure you want to delete this user?</Typography>
+            <Typography variant="body2">This action cannot be undone.</Typography>
+            
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="outlined" color="secondary" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant="contained" color="error" onClick={handleClose}>
+                Delete
+              </Button>
+            </Stack>
+          </Stack>
+        </MainCard>
+      )}
     </>
   );
 }

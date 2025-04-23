@@ -18,6 +18,10 @@ import HorizontalBar from './Drawer/HorizontalBar';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import Loader from 'components/Loader';
 import AddCustomer from 'sections/apps/customer/AddCustomer';
+import AddUser from 'sections/admin-panel/users/AddUser';
+import AddPackage from 'sections/admin-panel/package/AddPackage';
+import AddSubscription from 'sections/admin-panel/membership/AddSubscription';
+import AddCoach from 'sections/apps/coach/AddCoach';
 import { useIspValue } from 'hooks/useIspValue';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
@@ -85,6 +89,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </Links>
       </Box>
       <AddCustomer />
+      <AddUser />
+      <AddPackage />
+      <AddSubscription />
+      <AddCoach />
     </Box>
   );
 }

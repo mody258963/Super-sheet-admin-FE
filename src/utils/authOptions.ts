@@ -65,14 +65,17 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60 * 24 * 7
+    maxAge: 60 * 60 * 24 * 1 // Reduced to 1 day for better security
   },
   jwt: {
-    maxAge: 60 * 60 * 24 * 7
+    maxAge: 60 * 60 * 24 * 1 // Reduced to 1 day for better security
   },
   pages: {
     signIn: '/login',
+    signOut: '/login',
+    error: '/login', // Redirect to login page on error
   },
+  debug: process.env.NODE_ENV === 'development',
 };
 
 const handler = NextAuth(authOptions);

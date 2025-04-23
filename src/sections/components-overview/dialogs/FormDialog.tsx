@@ -36,7 +36,7 @@ export default function FormDialog() {
           <DialogContent>
             <DialogContentText sx={{ mb: 2 }}>
               To subscribe to this website, please enter your email address here. We will send updates occasionally.
-            </DialogContentText>
+             </DialogContentText>
             <TextField id="name" placeholder="Email Address" type="email" fullWidth variant="outlined" />
           </DialogContent>
           <DialogActions>

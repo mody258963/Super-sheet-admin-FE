@@ -1,6 +1,6 @@
 // project-imports
 import { NavActionType } from 'config';
-import { handlerCustomerDialog } from 'api/customer';
+import { handleCoachDialog } from 'api/admin-panel';
 
 // assets
 import {
@@ -44,25 +44,17 @@ const applications: NavItemType = {
   
     {
       id: 'customer',
-      title: 'customer',
-      type: 'collapse',
+      title: 'Coach',
+      type: 'item',
+      url: '/apps/customer/customer-list',
       icon: icons.customer,
-      children: [
+      actions: [
         {
-          id: 'customer-list',
-          title: 'list',
-          type: 'item',
-          url: '/apps/customer/customer-list',
-          actions: [
-            {
-              type: NavActionType.FUNCTION,
-              label: 'Add Customer',
-              function: () => handlerCustomerDialog(true),
-              icon: icons.add
-            }
-          ]
-        },
-
+          type: NavActionType.FUNCTION,
+          label: 'Add Coach',
+          function: () => handleCoachDialog(true),
+          icon: icons.add
+        }
       ]
     },
    

@@ -1,9 +1,14 @@
 {
-  "/api/users/route": "app/api/users/route.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/page": "app/page.js",
+  "/api/subscription/plans/route": "app/api/subscription/plans/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/api/users/route": "app/api/users/route.js",
+  "/api/subscription/subscription/route": "app/api/subscription/subscription/route.js",
+  "/[...not_found]/page": "app/[...not_found]/page.js",
   "/(dashboard)/admin-panel/users/list/page": "app/(dashboard)/admin-panel/users/list/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
   "/(dashboard)/admin-panel/membership/dashboard/page": "app/(dashboard)/admin-panel/membership/dashboard/page.js",
-  "/(dashboard)/admin-panel/online-course/teacher/add/page": "app/(dashboard)/admin-panel/online-course/teacher/add/page.js",
-  "/(dashboard)/apps/profiles/user/[tab]/page": "app/(dashboard)/apps/profiles/user/[tab]/page.js"
+  "/(dashboard)/apps/customer/customer-list/page": "app/(dashboard)/apps/customer/customer-list/page.js",
+  "/(dashboard)/admin-panel/packege/list/page": "app/(dashboard)/admin-panel/packege/list/page.js",
+  "/(dashboard)/admin-panel/membership/list/page": "app/(dashboard)/admin-panel/membership/list/page.js"
 }

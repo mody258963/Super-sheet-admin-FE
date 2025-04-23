@@ -14,7 +14,7 @@ import { NavItemType } from 'types/menu';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [ adminPanel, applications,  ]
+  items: [  applications,adminPanel  ]
 };
 
 export default menuItems;
